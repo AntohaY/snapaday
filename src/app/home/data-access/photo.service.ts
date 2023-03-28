@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, take, tap } from 'rxjs';
+import { BehaviorSubject, map, take, tap } from 'rxjs';
 import { Photo } from '../../shared/interfaces/photo';
 import {Platform} from '@ionic/angular';
 import { ImageOptions, CameraResultType, CameraSource, Camera } from '@capacitor/camera';
@@ -12,8 +12,21 @@ import { StorageService } from 'src/app/shared/data-access/storage.service';
 })
 export class PhotoService {
   #photos$ = new BehaviorSubject<Photo[]>([]);
+
   photos$ = this.#photos$.pipe(
     tap((photos) => this.storageService.save(photos))
+  );
+
+  hasTakenPhotoToday$ = this.#photos$.pipe(
+    map((photos) =>
+      photos.find(
+        (photo) =>
+          new Date().setHours(0, 0, 0, 0) ===
+          new Date(photo.dateTaken).setHours(0, 0, 0, 0)
+      )
+        ? true
+        : false
+    )
   );
 
   constructor(
