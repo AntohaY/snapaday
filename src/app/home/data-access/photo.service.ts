@@ -1,18 +1,24 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, take, tap } from 'rxjs';
 import { Photo } from '../../shared/interfaces/photo';
 import {Platform} from '@ionic/angular';
 import { ImageOptions, CameraResultType, CameraSource, Camera } from '@capacitor/camera';
+import { Directory, Filesystem } from '@capacitor/filesystem';
+import { Capacitor } from '@capacitor/core';
+import { StorageService } from 'src/app/shared/data-access/storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PhotoService {
   #photos$ = new BehaviorSubject<Photo[]>([]);
-  photo$ = this.#photos$.asObservable();
+  photos$ = this.#photos$.pipe(
+    tap((photos) => this.storageService.save(photos))
+  );
 
   constructor(
     private platform: Platform,
+    private storageService: StorageService
   ){}
 
   private addPhoto(fileName: string, filePath: string) {
@@ -28,6 +34,12 @@ export class PhotoService {
     this.#photos$.next(newPhotos);
   }
 
+  load() {
+    this.storageService.load$.pipe(take(1)).subscribe((photos) => {
+      this.#photos$.next(photos);
+    });
+  }
+
   async takePhoto() {
     const options: ImageOptions = {
       quality: 50,
@@ -40,10 +52,20 @@ export class PhotoService {
     };
     try {
       const photo = await Camera.getPhoto(options);
-      if (photo.path) {
-        this.addPhoto(Date.now().toString(), photo.path);
+      const uniqueName = Date.now().toString();
+      if (this.platform.is('capacitor') && photo.path) {
+        const photoOnFileSystem = await Filesystem.readFile({
+          path: photo.path,
+        });
+        const fileName = uniqueName + '.jpeg';
+        const permanentFile = await Filesystem.writeFile({
+          data: photoOnFileSystem.data,
+          path: fileName,
+          directory: Directory.Data,
+        });
+        this.addPhoto(fileName, Capacitor.convertFileSrc(permanentFile.uri));
       } else if (photo.dataUrl) {
-        this.addPhoto(Date.now().toString(), photo.dataUrl);
+        this.addPhoto(uniqueName, photo.dataUrl);
       }
     } catch (err) {
       console.log(err);

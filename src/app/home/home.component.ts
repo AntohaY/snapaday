@@ -32,7 +32,7 @@ import { PhotoListComponentModule } from './ui/photo-list.component';
 })
 
 export class HomeComponent {
-  photos$ = this.photoService.photo$.pipe(
+  photos$ = this.photoService.photos$.pipe(
     map((photos) =>
       photos.map((photo) => ({
         ...photo,
