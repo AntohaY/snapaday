@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, NgModule } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
-import { combineLatest, map } from 'rxjs';
+import { BehaviorSubject, combineLatest, combineLatestAll, map, pipe } from 'rxjs';
 import { PhotoService } from './data-access/photo.service';
 import { PhotoListComponentModule } from './ui/photo-list.component';
 
