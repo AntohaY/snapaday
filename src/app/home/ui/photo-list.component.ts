@@ -29,6 +29,27 @@ import { DaysAgoPipeModule } from './days-ago.pipe';
       </ion-item-sliding>
     </ion-list>
   `,
+  styles: [
+    `ion-list {
+      padding: 0;
+    }
+    ion-item-sliding {
+      margin-bottom: 2px;
+    }
+    ion-item {
+      --inner-padding-end: 0px;
+      --padding-start: 0px;
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+    ion-badge {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }`
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PhotoListComponent {
