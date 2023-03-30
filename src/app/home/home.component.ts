@@ -23,10 +23,22 @@ import { PhotoListComponentModule } from './ui/photo-list.component';
               <ion-icon name="camera-outline" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-buttons>
+          <ion-button (click)="modalIsOpen$.next(true)">
+              <ion-icon name="play" slot="icon-only"></ion-icon>
+            </ion-button>
         </ion-toolbar>
       </ion-header>
       <ion-content>
         <app-photo-list [photos]="vm.photos"></app-photo-list>
+        <ion-modal
+          [isOpen]="vm.modalIsOpen"
+          [canDismiss]="true"
+          (ionModalDidDismiss)="modalIsOpen$.next(false)"
+        >
+          <ng-template>
+            <app-slideshow [photos]="vm.photos"></app-slideshow>
+          </ng-template>
+        </ion-modal>
       </ion-content>
     </ng-container>
   `,
@@ -45,12 +57,16 @@ export class HomeComponent {
     )
   );
 
+  modalIsOpen$ = new BehaviorSubject(false);
+
   vm$ = combineLatest([
     this.photos$,
+    this.modalIsOpen$,
     this.photoService.hasTakenPhotoToday$,
   ]).pipe(
-    map(([photos, hasTakenPhotoToday]) => ({
+    map(([photos, modalIsOpen, hasTakenPhotoToday]) => ({
       photos,
+      modalIsOpen,
       hasTakenPhotoToday,
     }))
   );

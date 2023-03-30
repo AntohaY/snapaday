@@ -8,6 +8,7 @@ import {
 import { IonicModule, ModalController } from '@ionic/angular';
 import { BehaviorSubject, concatMap, delay, from, of, switchMap } from 'rxjs';
 import { Photo } from '../shared/interfaces/photo';
+import { SlideshowImageComponentModule } from './ui/slideshow-image.component';
 
 @Component({
   selector: 'app-slideshow',
@@ -22,7 +23,12 @@ import { Photo } from '../shared/interfaces/photo';
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content></ion-content>
+    <ion-content>
+      <app-slideshow-image
+        *ngIf="currentPhoto$ | async as photo"
+        [safeResourceUrl]="photo.safeResourceUrl"
+      ></app-slideshow-image>
+    </ion-content>
   `,
   styles: [
     `
@@ -56,7 +62,7 @@ export class SlideshowComponent {
 
 @NgModule({
   declarations: [SlideshowComponent],
-  imports: [IonicModule, CommonModule],
+  imports: [IonicModule, CommonModule, SlideshowImageComponentModule],
   exports: [SlideshowComponent],
 })
 export class SlideshowComponentModule {}
