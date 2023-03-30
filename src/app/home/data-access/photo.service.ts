@@ -85,4 +85,17 @@ export class PhotoService {
       throw new Error('Could not save photo');
     }
   }
+
+  async deletePhoto(name: string) {
+    const newPhotos = this.#photos$.value.filter(
+      (photos) => photos.name !== name
+    );
+    this.#photos$.next(newPhotos);
+    if (this.platform.is('capacitor')) {
+      await Filesystem.deleteFile({
+        path: name,
+        directory: Directory.Data,
+      });
+    }
+  }
 }

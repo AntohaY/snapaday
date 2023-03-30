@@ -4,6 +4,7 @@ import { DomSanitizer } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 import { BehaviorSubject, combineLatest, combineLatestAll, map, pipe } from 'rxjs';
+import { SlideshowComponentModule } from '../slideshow/slideshow.component';
 import { PhotoService } from './data-access/photo.service';
 import { PhotoListComponentModule } from './ui/photo-list.component';
 
@@ -29,7 +30,7 @@ import { PhotoListComponentModule } from './ui/photo-list.component';
         </ion-toolbar>
       </ion-header>
       <ion-content>
-        <app-photo-list [photos]="vm.photos"></app-photo-list>
+        <app-photo-list [photos]="vm.photos" (delete)="photoService.deletePhoto($event)"></app-photo-list>
         <ion-modal
           [isOpen]="vm.modalIsOpen"
           [canDismiss]="true"
@@ -79,6 +80,7 @@ export class HomeComponent {
 
 @NgModule({
   imports: [
+    SlideshowComponentModule,
     PhotoListComponentModule,
     CommonModule,
     IonicModule,

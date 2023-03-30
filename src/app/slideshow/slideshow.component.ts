@@ -16,7 +16,7 @@ import { SlideshowImageComponentModule } from './ui/slideshow-image.component';
     <ion-header>
       <ion-toolbar color="danger">
         <ion-title>Play</ion-title>
-        <ion-buttons slot="end">]
+        <ion-buttons slot="end">
           <ion-button (click)="modalCtrl.dismiss()">
             <ion-icon name="close" slot="icon-only"></ion-icon>
           </ion-button>
@@ -50,7 +50,7 @@ export class SlideshowComponent {
       of(photo).pipe(
         // Creating a stream for each individual photo
         // will allow us to delay the start of the stream
-        delay(500)
+        delay(1000)
       )
     )
   );
