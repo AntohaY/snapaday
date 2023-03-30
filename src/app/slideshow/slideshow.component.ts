@@ -6,7 +6,7 @@ import {
   NgModule,
 } from '@angular/core';
 import { IonicModule, ModalController } from '@ionic/angular';
-import { BehaviorSubject, concatMap, delay, from, of, switchMap } from 'rxjs';
+import { BehaviorSubject, concatMap, delay, from, of, switchMap, tap } from 'rxjs';
 import { Photo } from '../shared/interfaces/photo';
 import { SlideshowImageComponentModule } from './ui/slideshow-image.component';
 
@@ -24,8 +24,12 @@ import { SlideshowImageComponentModule } from './ui/slideshow-image.component';
       </ion-toolbar>
     </ion-header>
     <ion-content>
+      <div class="label-container" [hidden]="!hideSlideshow">
+        <ion-label color="danger">You don't have enough photos for slideshow, minimum is 2</ion-label>
+      </div>
       <app-slideshow-image
         *ngIf="currentPhoto$ | async as photo"
+        [hidden]="hideSlideshow"
         [safeResourceUrl]="photo.safeResourceUrl"
       ></app-slideshow-image>
     </ion-content>
@@ -35,16 +39,26 @@ import { SlideshowImageComponentModule } from './ui/slideshow-image.component';
       :host {
         height: 100%;
       }
+
+      .label-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+      }
     `,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class SlideshowComponent {
+  hideSlideshow = true;
   currentPhotos$ = new BehaviorSubject<Photo[]>([]);
   currentPhoto$ = this.currentPhotos$.pipe(
     // Emit one photo at a time
-    switchMap((photos) => from(photos)),
+    tap((photos) => this.hideSlideshow = photos.length <= 1),
+    switchMap((photos) =>
+    from(photos)),
     concatMap((photo) =>
       // Create a new stream for each individual photo
       of(photo).pipe(

@@ -19,14 +19,14 @@ import { PhotoListComponentModule } from './ui/photo-list.component';
           <ion-buttons slot="end">
             <ion-button
               (click)="photoService.takePhoto()"
-              [disabled]="vm.hasTakenPhotoToday === true"
+
             >
               <ion-icon name="camera-outline" slot="icon-only"></ion-icon>
             </ion-button>
           </ion-buttons>
           <ion-button (click)="modalIsOpen$.next(true)">
               <ion-icon name="play" slot="icon-only"></ion-icon>
-            </ion-button>
+          </ion-button>
         </ion-toolbar>
       </ion-header>
       <ion-content>
