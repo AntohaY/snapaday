@@ -55,6 +55,7 @@ yarn-error.log
 
 # Miscellaneous
 /.angular
+/android
 /.angular/cache
 .sass-cache/
 /connect.lock

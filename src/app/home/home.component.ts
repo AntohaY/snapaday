@@ -19,7 +19,7 @@ import { PhotoListComponentModule } from './ui/photo-list.component';
           <ion-buttons slot="end">
             <ion-button
               (click)="photoService.takePhoto()"
-
+              [disabled]="vm.hasTakenPhotoToday"
             >
               <ion-icon name="camera-outline" slot="icon-only"></ion-icon>
             </ion-button>
